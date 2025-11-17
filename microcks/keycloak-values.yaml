@@ -1,0 +1,42 @@
+image:
+  tag: "26.4.5"
+extraEnv: |
+  - name: KC_BOOTSTRAP_ADMIN_USERNAME
+    value: admin
+  - name: KC_BOOTSTRAP_ADMIN_PASSWORD
+    value: microcks123
+  - name: KC_HOSTNAME_STRICT
+    value: 'false'
+  - name: KC_HOSTNAME
+    value: https://keycloak.127.0.0.1.sslip.io
+  - name: KC_HOSTNAME_BACKCHANNEL_DYNAMIC
+    value: 'true'
+
+# Additional environment variables for Keycloak mapped from Secret or ConfigMap
+extraEnvFrom: ""
+
+command:
+  - "/opt/keycloak/bin/kc.sh"
+  - "--verbose"
+  - "start"
+
+ingress:
+  enabled: true
+  servicePort: http
+  labels: { }
+  # List of rules for the Ingress
+  rules:
+    - # Ingress host
+      host: 'keycloak.127.0.0.1.sslip.io'
+      # Paths for the host
+      paths:
+        - path: '{{ tpl .Values.http.relativePath $ | trimSuffix "/" }}/'
+          pathType: Prefix
+  # TLS configuration
+  tls:
+    - hosts:
+        - keycloak.127.0.0.1.sslip.io
+      secretName: "keycloak-tls"
+
+http:
+  relativePath: "/"

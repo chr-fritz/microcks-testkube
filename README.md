@@ -20,6 +20,11 @@ kubectl apply -f https://raw.githubusercontent.com/microcks/microcks-operator/re
 kubectl create namespace microcks
 kubectl apply -f https://raw.githubusercontent.com/microcks/microcks-operator/refs/tags/0.0.5/deploy/operator.yaml -n microcks
 
+helm install keycloak codecentric/keycloakx
+helm upgrade --install keycloak oci://ghcr.io/codecentric/helm-charts/keycloakx -f microcks/keycloak-values.yaml
+
+# Import keycloak-microcks-realm-full.json as new realm in keycloak 
+
 kubectl apply -f microcks/microcks-local.yaml -n microcks
 
 # the default user/password is admin/microcks123
@@ -34,11 +39,11 @@ open https://microcks.127.0.0.1.sslip.io
 # or create the artifacts via YAML descriptor using GitOps
 kubectl apply -f microcks/pastry-artifacts.yaml -n microcks
 
-microcks-cli import microcks/APIPastry-openapi.yaml:true \
+microcks import microcks/APIPastry-openapi.yaml:true \
     --microcksURL=https://microcks.127.0.0.1.sslip.io/api/ \
     --keycloakClientId=microcks-serviceaccount \
     --keycloakClientSecret="ab54d329-e435-41ae-a900-ec6b3fe15c54" \
-    --insecure --waitFor=6sec
+    --insecure-tls
 
 # making calls against the mock
 http --verify=no get https://microcks.127.0.0.1.sslip.io/rest/API+Pastry+-+2.0/2.0.0/pastry
@@ -64,7 +69,7 @@ microcks-cli test 'API Pastry - 2.0:2.0.0' http://quarkus-api-pastry-svc.default
     --microcksURL=https://microcks.127.0.0.1.sslip.io/api/ \
     --keycloakClientId=microcks-serviceaccount \
     --keycloakClientSecret="ab54d329-e435-41ae-a900-ec6b3fe15c54" \
-    --insecure --waitFor=30sec
+    --insecure-tls
 ```
 
 ## Testkube Demo

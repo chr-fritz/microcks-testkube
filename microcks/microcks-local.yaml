@@ -8,8 +8,14 @@ spec:
   microcks:
     url: microcks.127.0.0.1.sslip.io
   keycloak:
+    enabled: true
     url: keycloak.127.0.0.1.sslip.io
-    privateUrl: http://microcks-keycloak.microcks.svc.cluster.local:8080
+    privateUrl: http://keycloak-keycloakx-http.default.svc.cluster.local
+    install: false
+    realm: microcks
+    serviceAccount: microcks-serviceaccount
+    serviceAccountCredentials: ab54d329-e435-41ae-a900-ec6b3fe15c54
+
   features:
     aiCopilot:
       enabled: false
